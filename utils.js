@@ -4,4 +4,15 @@ function swap(array, index1, index2) {
 	array[index2] = temp
 }
 
-module.exports.swap = swap
+/**
+ * 返回指定范围内的整数
+ * @param  {[type]} start 范围开始
+ * @param  {[type]} end   范围结束（不包括）
+ * @return {[type]}       整数
+ */
+function getRandomWithRange(start, end) {
+	return parseInt(Math.random() * (end - start)) + start;
+}
+
+module.exports.swap = swap;
+module.exports.getRandomWithRange = getRandomWithRange;
