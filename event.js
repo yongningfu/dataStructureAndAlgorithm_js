@@ -48,6 +48,65 @@ Event.prototype.removeHandler = function(type, handler) {
 
 
 
+//仿造redux类型
+
+var Event = function () {
+
+  var handlers = {};
+  var subscribe = function(type, handler) {
+    if (typeof handlers[type] === 'undefined') handlers[type] = [];
+    handlers[type].push(handler);
+
+    var isSubscribed = true;
+
+    return function unsubscribe() {
+      //防止重复删除
+      if (!isSubscribed) return;
+      isSubscribed = false;
+
+      var index = handlers[type].indexOf(handler);
+      handlers[type].splice(index, 1);
+    }
+  }
+
+  var toggle = function(type) {
+    if (Array.isArray(handlers[type])) {
+      for (var i = 0; i < handlers[type].length; i++) {
+        handlers[type][i]();
+      }
+    }
+  }
+
+  return {
+    subscribe,
+    toggle
+  }
+}
+
+
+var event = new Event();
+
+var unClick1 = event.subscribe('click', function() {
+  console.log('click1');
+});
+
+var unClick2 = event.subscribe('click', function() {
+  console.log('click2');
+});
+
+var uninput1 = event.subscribe('input', function() {
+  console.log('input1');
+});
+
+var uninput2 = event.subscribe('input', function() {
+  console.log('input2');
+});
+
+
+event.toggle('click');
+event.toggle('input');
+uninput1();
+event.toggle('input');
 
 
 

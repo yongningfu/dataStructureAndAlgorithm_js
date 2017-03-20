@@ -150,7 +150,18 @@ String.prototype.trim2 = function() {
 
 console.log('  aa  '.trim2());
 
+var trans = function(str) {
+  return str.replace(/(\b[A-Z])|(\w[A-Z])/g, function(match, $1, $2) {
+    if ($1) {
+      return $1.toLowerCase();
+    } else {
+      return $2[0] + '_' + $2[1].toLowerCase();
+    }
+    // return match.toLowerCase();
+  });
+}
 
+console.log(trans('  HelloWorldCase'));
 
 
 
