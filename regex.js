@@ -14,6 +14,13 @@ console.log(t)
 var t = /^((\w)|(\w[\w\.]*\w))@\w+\.\w{2,3}(\.\w{2,3})?$/.test('.fu.tt.tt.xx@qq.com.cn');
 console.log(t);
 
+// 上面的写法实际是非常糟糕的，类似于 这种 tt.tt.tt.tt@  这种形式的匹配，
+// 我们应该从首位抽离， 其中 首 和 尾是固定的 为 ^\w+  与 @, 中间是循环的， 那么事情就非常好解决了
+// 实际就为   ^\w+(\.\w+)*@
+
+var t = /^\w+(\.\w+)*@\w+\.\w{2,3}(\.\w{2,3})?$/
+console.log(t);
+
 'fu.tt.tt.xx@qq.com.cn'.replace(/\w+/, function(match, p1, p2) {
   console.log(match);
   console.log(p1);
