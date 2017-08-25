@@ -1,48 +1,54 @@
-//寄生组件继承模式
-/**
- * 继承有两种方式  
- * 一种是基于原型链的继承
- * 一种是利用this进行父属性的子绑定
+/***
+ * 对原型继承方式的理解
  * 
- * 一般来说，我们把函数放在原型上面，这样的话，没当new的时候，对象的大小就比较小
+ * 如果A类继承于B类，即说明A的prototype为B的prototype或者能爱原型链上面找到B的prototype
  * 
- * 寄生组合模式是如何的呢？
- * 1 利用基于原型的继承 去继承父的原型
- * 2 利用this属性绑定的方式，去继承父的属性
- *  
- * 这样的话，由于继承了父的原型 所以能用 instanceof判断是否为父
- * 而且把父的属性和方法都继承得到
+ * 上面的规则也就是 instanceof 的规则
+ * 
+ * 继承方式的比较 (A 继承于 B)
+ * 1. A.prototype = B.prototype
+ *    这种方式不好, 修改A的prototype同时会修改B的prototype
+ * 
+ * 2. A.prototype = new B() 
+ *    这种方式还可以，但是继承多 new 了一个B实例
+ * 
+ * 3. 为了解决 2 中必须 new 一个B实例的问题, 我们引入一个继承于B的新函数解决
+ *    var Fn = function() {};
+ *    Fn.prototype = B.prototype;
+ *    A.prototype = new Fn();
+ * 
  */
 
-function inheritPrototype(Child, Parent) {
-  var prototype = Object(Parent.prototype);
-  prototype.constructor = Child;
-  Child.prototype = prototype;
+
+function inherite(superClass, subClass) {
+  var Fn = function() {};
+  Fn.prototype = superClass.prototype;
+
+  var proto = subClass.prototype = new Fn();
+  proto.constructor = subClass;
+  proto._super_ = superClass;
 }
 
-var Animal = function(name) {
-  this.name = name;
+
+var Info1 = function(age) {
+  this.age = age;
 }
 
-Animal.prototype.intruduce = function() {
-  return this.name;
+Info1.prototype.getInfo = function() {
+  console.log(this.age, this.name);
 }
 
-var Dog = function(name, type) {
-  Animal.call(this, name);  //利用this绑定 进行继承属性
-  this.type = type;
+var Info2 = function(age, name) {
+ this._super_(age); 
+ this.name = name;
 }
 
-inheritPrototype(Dog, Animal);
 
-Dog.prototype.say = function() {
-  return this.intruduce() + this.type;
-}
+inherite(Info1, Info2);
+var info = new Info2(1, 'bob');
+info.getInfo();
 
-var dog = new Dog('小狗', 'type');
 
-console.log(dog instanceof Dog);
-console.log(dog instanceof Animal);
 
 
 
