@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+    </style>
+  </head>
+  <body>
+    <table id="jsList">
+      <thead>
+        <tr>
+          <td>id</td>
+          <td>price</td>
+          <td>sales</td>          
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>25</td>
+          <td>33</td>          
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>24</td>
+          <td>32</td>          
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>23</td>
+          <td>31</td>          
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>22</td>
+          <td>35</td>          
+         </tr>
+      </tbody>
+    </table>
+    <!-- 高性能的列表排序的思路  -->
+    <script type="text/javascript">
+      var nodeTbody = document.querySelector('#jsList tbody');
+
+      //  取得tbody下面的tr
+      var nodeTrList = nodeTbody.getElementsByTagName('tr');
+
+      var arrayNodeTrList = Array.prototype.slice.call(nodeTrList);
+
+      //  根据price进行排序
+      arrayNodeTrList.sort(function(ele1, ele2) {
+        return parseInt(ele2.getElementsByTagName('td')[2].textContent) - 
+          parseInt(ele1.getElementsByTagName('td')[2].textContent);
+      });
+
+      // 巧妙的利用nodeTrList是一个呼吸伪列表 它的顺序会随着dom操作在不断的变化
+      /**
+       * nodeTrList   arrayTrList
+       * A            C
+       * B            A
+       * C            B
+       * 
+       * A 和 C 不相等 移动(nodeTrList随着dom操作，内容会跟着变化)
+       * 
+       * C            C 
+       * A            A
+       * B            B
+       * 
+       * 后面的就剩 A -- A    B---B 比较了
+       * 
+       * 这个思路根据用户只是简单的进行移动dom操作 性能非常不错
+       * 
+      */
+      for (var i = 0; i < arrayNodeTrList.length; i++) {
+        if (arrayNodeTrList[i] != nodeTrList[i]) {
+          nodeTbody.insertBefore(arrayNodeTrList[i] ,nodeTrList[i]);
+        }
+      }
+    </script>
+</body>
+</html>
+
+
+
